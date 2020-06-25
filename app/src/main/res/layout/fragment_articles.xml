@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="android.view.View" />
+        <import type="android.view.View"/>
 
     </data>
 
@@ -14,11 +14,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        <Button
-                android:id="@+id/btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Go "/>
+        <androidx.recyclerview.widget.RecyclerView
+
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"/>
 
     </LinearLayout>
 
