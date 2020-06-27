@@ -2,14 +2,19 @@ package com.shakatreh.nytimes.model.article;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
+import androidx.databinding.BindingAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.shakatreh.nytimes.R;
+import com.squareup.picasso.Picasso;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.List;
 
 public class Article implements Parcelable {
 
     @SerializedName("abstract")
-    private String _abstract;
+    private String mAbstract;
     @SerializedName("adx_keywords")
     private String adxKeywords;
     @SerializedName("asset_id")
@@ -46,7 +51,7 @@ public class Article implements Parcelable {
     private Long views;
 
     protected Article(Parcel in) {
-        _abstract = in.readString();
+        mAbstract = in.readString();
         adxKeywords = in.readString();
         if (in.readByte() == 0) {
             assetId = null;
@@ -85,12 +90,12 @@ public class Article implements Parcelable {
         }
     };
 
-    public String get_abstract() {
-        return _abstract;
+    public String getmAbstract() {
+        return mAbstract;
     }
 
-    public void set_abstract(String _abstract) {
-        this._abstract = _abstract;
+    public void setmAbstract(String mAbstract) {
+        this.mAbstract = mAbstract;
     }
 
     public String getAdxKeywords() {
@@ -237,7 +242,7 @@ public class Article implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_abstract);
+        dest.writeString(mAbstract);
         dest.writeString(adxKeywords);
         if (assetId == null) {
             dest.writeByte((byte) 0);
@@ -265,5 +270,45 @@ public class Article implements Parcelable {
             dest.writeByte((byte) 1);
             dest.writeLong(views);
         }
+    }
+
+    public String getSmallestThumb() {
+        if (media != null && media.size() > 0) {
+            List<MediaMetadata> mediaMetadata = media.get(0).getMediaMetadata();
+            if (mediaMetadata != null && mediaMetadata.size() > 0) {
+                String url = mediaMetadata.get(0).getUrl();
+                if (!url.isEmpty())
+                    return url;
+            }
+        }
+        return null;
+    }
+
+    public String getBiggestThumb() {
+        if (media != null && media.size() > 0) {
+            List<MediaMetadata> mediaMetadata = media.get(0).getMediaMetadata();
+            if (mediaMetadata != null && mediaMetadata.size() > 0) {
+                String url = mediaMetadata.get(mediaMetadata.size() - 1).getUrl();
+                if (!url.isEmpty())
+                    return url;
+            }
+        }
+        return null;
+    }
+
+    @BindingAdapter("articleImage")
+    public synchronized static void loadImage(CircleImageView view, String imageUrl) {
+            Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.bg_default_circle_view)
+                    .into(view);
+    }
+
+    @BindingAdapter("articleImage")
+    public synchronized static void loadImage(ImageView view, String imageUrl) {
+        Picasso.get()
+                .load(imageUrl)
+                .placeholder(R.drawable.bg_default_circle_view)
+                .into(view);
     }
 }
