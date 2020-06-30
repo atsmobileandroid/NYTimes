@@ -2,6 +2,7 @@
     <string name="app_name">NYTimes</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="close">Close</string>
+    <string name="arrow_description">This arrow navigate from article fragment to article details fragment</string>
+    <string name="show_the_article_cover">show the article cover</string>
 </resources>

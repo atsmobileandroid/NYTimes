@@ -23,6 +23,7 @@ import com.shakatreh.nytimes.net.NoConnectivityException;
 import com.shakatreh.nytimes.util.Utils;
 import com.shakatreh.nytimes.viewmodel.ArticlesViewModel;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -58,11 +59,11 @@ public class ArticlesFragment extends Fragment{
     }
 
     private void getArticles() {
-        viewModel.data.observe(this, new Observer<ArticlesResponse>() {
+        viewModel.data.observe(getViewLifecycleOwner(), new Observer<ArticlesResponse>() {
             @Override
             public void onChanged(ArticlesResponse articlesResponse) {
                 if (articlesResponse.getThrowable() != null) {
-                    if (articlesResponse.getThrowable() instanceof NoConnectivityException) {
+                    if (articlesResponse.getThrowable() instanceof IOException) {
                         Utils.showAlertDialog(getContext(), "Connectivity problem", "Unable to connect to the internet!");
                     } else {
                         // TODO: can implementing other errors

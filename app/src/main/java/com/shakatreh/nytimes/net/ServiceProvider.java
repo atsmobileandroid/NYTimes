@@ -15,9 +15,8 @@ public class ServiceProvider {
     private static ServiceProvider instance;
     private APIPaths apiPaths;
 
-    private ServiceProvider(Context context) {
+    private ServiceProvider() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new NetworkConnectionInterceptor(context))
                 .readTimeout(20, TimeUnit.SECONDS)
                 .connectTimeout(20,TimeUnit.SECONDS)
                 .build();
@@ -31,9 +30,9 @@ public class ServiceProvider {
     }
 
 
-    public static APIPaths getInstance(Context context){
+    public static APIPaths getInstance(){
         if(instance == null)
-            instance = new ServiceProvider(context);
+            instance = new ServiceProvider();
         return instance.apiPaths;
     }
 }
