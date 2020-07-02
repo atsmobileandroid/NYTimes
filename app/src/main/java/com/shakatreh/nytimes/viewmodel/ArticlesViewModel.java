@@ -5,6 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
+import androidx.test.espresso.idling.CountingIdlingResource;
+
 import com.shakatreh.nytimes.model.article.ArticlesResponse;
 import com.shakatreh.nytimes.net.ServiceProvider;
 import com.shakatreh.nytimes.util.Constants;
@@ -17,6 +19,8 @@ import io.reactivex.schedulers.Schedulers;
 public class ArticlesViewModel extends AndroidViewModel {
 
     private static final String TAG = "ArticlesViewModel";
+    private static CountingIdlingResource mIdlingRes = new CountingIdlingResource("Global");;
+
 
     private CompositeDisposable disposables;
     public MutableLiveData<ArticlesResponse> data;
@@ -29,6 +33,7 @@ public class ArticlesViewModel extends AndroidViewModel {
 
 
     public void getArticles() {
+        mIdlingRes.increment();
         ServiceProvider.getInstance().getArticles(Constants.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -41,6 +46,7 @@ public class ArticlesViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(ArticlesResponse articlesResponse) {
                         data.setValue(articlesResponse);
+                        mIdlingRes.decrement();
                     }
 
                     @Override
@@ -55,6 +61,10 @@ public class ArticlesViewModel extends AndroidViewModel {
     protected void onCleared() {
         disposables.clear();
         super.onCleared();
+    }
+
+    public static CountingIdlingResource getIdlingResourceInTest() {
+        return mIdlingRes;
     }
 
 }
