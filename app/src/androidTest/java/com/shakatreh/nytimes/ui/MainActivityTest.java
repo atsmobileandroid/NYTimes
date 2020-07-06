@@ -24,11 +24,10 @@ public class MainActivityTest {
     @Rule
     public ActivityScenarioRule<MainActivity> rule = new ActivityScenarioRule<>(MainActivity.class);
 
+
     @Test
     public void test_isActivityInView() {
         Espresso.onView(withId(R.id.container)).check(matches(isDisplayed()));
     }
-
-
 
 }

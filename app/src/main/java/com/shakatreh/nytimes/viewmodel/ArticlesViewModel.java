@@ -10,6 +10,8 @@ import androidx.test.espresso.idling.CountingIdlingResource;
 import com.shakatreh.nytimes.model.article.ArticlesResponse;
 import com.shakatreh.nytimes.net.ServiceProvider;
 import com.shakatreh.nytimes.util.Constants;
+import com.shakatreh.nytimes.util.EspressoIdlingResources;
+
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -19,7 +21,6 @@ import io.reactivex.schedulers.Schedulers;
 public class ArticlesViewModel extends AndroidViewModel {
 
     private static final String TAG = "ArticlesViewModel";
-    private static CountingIdlingResource mIdlingRes = new CountingIdlingResource("Global");;
 
 
     private CompositeDisposable disposables;
@@ -33,7 +34,7 @@ public class ArticlesViewModel extends AndroidViewModel {
 
 
     public void getArticles() {
-        mIdlingRes.increment();
+        EspressoIdlingResources.increment();
         ServiceProvider.getInstance().getArticles(Constants.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -46,12 +47,13 @@ public class ArticlesViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(ArticlesResponse articlesResponse) {
                         data.setValue(articlesResponse);
-                        mIdlingRes.decrement();
+                        EspressoIdlingResources.decrement();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         data.setValue(new ArticlesResponse(e));
+                        EspressoIdlingResources.decrement();
                     }
                 });
     }
@@ -61,10 +63,6 @@ public class ArticlesViewModel extends AndroidViewModel {
     protected void onCleared() {
         disposables.clear();
         super.onCleared();
-    }
-
-    public static CountingIdlingResource getIdlingResourceInTest() {
-        return mIdlingRes;
     }
 
 }
